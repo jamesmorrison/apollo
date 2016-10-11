@@ -12,7 +12,7 @@ echo "================================================"
 
 ## Update all the things
 
-echo "Updating system services... (this takes a while)"
+echo "Updating system services... (this takes a while, might be a good time to put the kettle on)"
 
 apt-get update > /dev/null 2>&1
 apt-get upgrade -y > /dev/null 2>&1
@@ -37,14 +37,24 @@ cp /vagrant/.config/nginx-default.conf /etc/nginx/sites-enabled/
 cp /vagrant/.config/index.html /projects/sites/000-default/
 service ngxinx restart > /dev/null 2>&1
 
+
+## Install SSL certificate
+
+echo "Installing SSL certificate..."
+
+mkdir /etc/nginx/ssl
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/selfsigned.key -out /etc/nginx/ssl/selfsigned.crt -subj "/C=GB/ST=London/L=London/O=Vagrant/OU=Vagrant/CN=*.dev" > /dev/null 2>&1
+
+
 ## Install MySQL
 
 echo "Installing MySQL Server..."
 
-sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password root"
-sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password root"
+debconf-set-selections <<< "mysql-server mysql-server/root_password password root"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password root"
 
 apt-get install mysql-server -y > /dev/null 2>&1
+
 
 
 ## Install PHP 7
@@ -63,9 +73,9 @@ sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.0/fpm/php.ini
 echo "Installing WP-CLI..."
 
 cd /
-sudo curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /dev/null 2>&1
-sudo chmod +x wp-cli.phar
-sudo mv wp-cli.phar /usr/local/bin/wp
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /dev/null 2>&1
+chmod +x wp-cli.phar
+mv wp-cli.phar /usr/local/bin/wp
 
 
 ## Install WordPress
