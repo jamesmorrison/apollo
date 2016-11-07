@@ -16,6 +16,8 @@ echo "Updating system services... (this takes a while, might be a good time to p
 
 apt-get update > /dev/null 2>&1
 apt-get upgrade -y > /dev/null 2>&1
+apt-get install curl > /dev/null 2>&1
+
 
 echo "vagrant ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
