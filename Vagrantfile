@@ -38,6 +38,12 @@ Vagrant.configure("2") do |config|
 	# Provisioning script
 	config.vm.provision "shell", path: ".config/apollo-setup.sh"
 
+	# Restart services on boot
+	if vagrant_version >= "1.6.0"
+		config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
+		config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
+	end
+
 	# Prefer VMware Fusion before VirtualBox
 	config.vm.provider "vmware_fusion"
 	config.vm.provider "virtualbox"

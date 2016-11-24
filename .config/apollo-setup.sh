@@ -124,4 +124,3 @@ apt-get clean > /dev/null 2>&1
 echo "================================================"
 echo "Apollo configuration is complete"
 echo "================================================"
-GIT
