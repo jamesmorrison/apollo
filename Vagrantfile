@@ -26,6 +26,9 @@ Vagrant.configure("2") do |config|
 	config.vm.hostname = "apollo"
 	config.ssh.forward_agent = true
 
+	# This supresses the harmless but annoying 'stdin: is not a tty' error that is generated every time a shell script provisioner is run
+	config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+
 	# Synced folders	
 	if vagrant_version >= "1.3.0"
 		config.vm.synced_folder "logs", "/projects/logs", owner: "www-data", group: "www-data"
