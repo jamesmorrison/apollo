@@ -20,6 +20,18 @@ apt-get upgrade -y > /dev/null 2>&1
 echo "vagrant ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 
+## Install Common Components
+
+echo "Installing Common Components..."
+
+echo postfix postfix/main_mailer_type select Internet Site | debconf-set-selections
+echo postfix postfix/mailname string apollo | debconf-set-selections
+
+apt-get install colordiff curl dos2unix imagemagick gettext git libsqlite3-dev ngrep ntp postfix unzip zip -y > /dev/null 2>&1
+
+echo "inet_protocols = ipv4" >> "/etc/postfix/main.cf"
+
+
 ## Install Nginx
 
 echo "Installing Nginx..."
@@ -34,8 +46,10 @@ sed -i "s/# server_tokens off/server_tokens off; client_max_body_size 64m/" /etc
 rm -R /etc/nginx/sites-available/*
 rm -R /etc/nginx/sites-enabled/*
 cp /vagrant/.config/nginx-default.conf /etc/nginx/sites-enabled/
+cp /vagrant/.config/nginx-default-ssl.conf /etc/nginx/sites-enabled/
 cp /vagrant/.config/index.html /projects/sites/000-default/
 service ngxinx restart > /dev/null 2>&1
+
 
 
 ## Install SSL certificate
@@ -43,7 +57,7 @@ service ngxinx restart > /dev/null 2>&1
 echo "Installing SSL certificate..."
 
 mkdir /etc/nginx/ssl
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/selfsigned.key -out /etc/nginx/ssl/selfsigned.crt -subj "/C=GB/ST=London/L=London/O=Vagrant/OU=Vagrant/CN=*.dev" > /dev/null 2>&1
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/selfsigned.key -out /etc/nginx/ssl/selfsigned.crt -subj "/C=GB/ST=London/L=London/O=Apollo/OU=Apollo/CN=*.dev" > /dev/null 2>&1
 
 
 ## Install MySQL
@@ -56,17 +70,21 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 apt-get install mysql-server -y > /dev/null 2>&1
 
 
+## Install Memcached
+
+echo "Installing Memcached..."
+apt-get install memcached -y > /dev/null 2>&1
+
 
 ## Install PHP 7
 
 echo "Installing PHP 7 and dependencies..."
 
-apt-get install php7.0-cli php7.0-dev php7.0-fpm php7.0-cgi php7.0-mysql php7.0-xmlrpc php7.0-curl php7.0-gd php7.0-imap php7.0-pspell php7.0-xml -y > /dev/null 2>&1
+apt-get install php7.0-bcmath php7.0-cgi php7.0-cli php7.0-curl php7.0-dev php7.0-fpm php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-mysql php7.0-imap php7.0-json php7.0-pspell php7.0-soap php7.0-ssh2 php7.0-xml php7.0-xmlrpc php7.0-zip php-imagick php-memcache php-pear -y > /dev/null 2>&1
 
 sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.0/fpm/php.ini
 sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.0/fpm/php.ini
 sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.0/fpm/php.ini
-
 
 ## Install WP-CLI
 
@@ -91,6 +109,15 @@ mysql -uroot -proot -e "CREATE DATABASE wp_template" > /dev/null 2>&1 | grep -v 
 rm wp-config-sample.php
 rm wp-content/plugins/hello.php
 rm -R wp-content/plugins/akismet
+
+
+## Cleanup
+
+echo "Cleaning up..."
+
+apt-get autoremove -y > /dev/null 2>&1
+apt-get clean > /dev/null 2>&1
+
 
 ## All Done :)
 
