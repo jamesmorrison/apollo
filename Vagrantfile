@@ -1,11 +1,14 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+
+# Make sure shared folders exist
 FileUtils.mkdir_p(File.dirname(__FILE__)+'/sites')
 FileUtils.mkdir_p(File.dirname(__FILE__)+'/sites/000-default')
 FileUtils.mkdir_p(File.dirname(__FILE__)+'/sites/000-template')
 FileUtils.mkdir_p(File.dirname(__FILE__)+'/logs')
 
+# Set vagrant directory
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
 Vagrant.configure("2") do |config|
