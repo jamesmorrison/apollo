@@ -45,6 +45,7 @@ Vagrant.configure("2") do |config|
 	if vagrant_version >= "1.6.0"
 		config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
 		config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
+		config.vm.provision :shell, inline: "sudo service php7.0-fpm restart", run: "always"
 	end
 
 	# Prefer VMware Fusion before VirtualBox
