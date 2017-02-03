@@ -47,7 +47,7 @@ apt-get install nginx -y > /dev/null 2>&1
 sed -i "s/worker_connections 768/worker_connections 1024/" /etc/nginx/nginx.conf
 sed -i "s/# multi_accept on/multi_accept on/" /etc/nginx/nginx.conf
 sed -i "s/keepalive_timeout 65/keepalive_timeout 15/" /etc/nginx/nginx.conf
-sed -i "s/# server_tokens off/server_tokens off; client_max_body_size 64m/" /etc/nginx/nginx.conf
+sed -i "s/# server_tokens off/server_tokens off; client_max_body_size 64m; fastcgi_buffers 16 16k; fastcgi_buffer_size 32k/" /etc/nginx/nginx.conf
 
 rm -R /etc/nginx/sites-available/*
 rm -R /etc/nginx/sites-enabled/*
