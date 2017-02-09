@@ -31,8 +31,8 @@ Vagrant.configure("2") do |config|
 
 	# Synced folders	
 	if vagrant_version >= "1.3.0"
-		config.vm.synced_folder "logs", "/projects/logs", owner: "vagrant", group: "www-data"
-                config.vm.synced_folder "sites", "/projects/sites", owner: "vagrant", group: "www-data"
+		config.vm.synced_folder "logs", "/projects/logs", owner: "www-data", group: "www-data"
+                config.vm.synced_folder "sites", "/projects/sites", owner: "www-data", group: "www-data"
 	else
 		config.vm.synced_folder "logs", "/projects/logs", :owner => "vagrant"
 		config.vm.synced_folder "sites", "/projects/sites", :owner => "vagrant"
