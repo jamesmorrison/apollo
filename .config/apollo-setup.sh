@@ -76,12 +76,6 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 apt-get install mysql-server -y > /dev/null 2>&1
 
 
-## Install Memcached
-
-echo "Installing Memcached..."
-apt-get install memcached -y > /dev/null 2>&1
-
-
 ## Install PHP 7
 
 echo "Installing PHP 7 and dependencies..."
@@ -91,6 +85,16 @@ apt-get install php7.0-bcmath php7.0-cgi php7.0-cli php7.0-curl php7.0-dev php7.
 sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.0/fpm/php.ini
 sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.0/fpm/php.ini
 sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.0/fpm/php.ini
+
+
+## Install Mailserver
+
+echo "Installing Postfix (email server)..."
+
+apt-get install mailutils -
+sed -i "s/inet_interfaces = all/inet_interfaces = loopback-only/" /etc/postfix/main.cfy
+service postfix restart
+
 
 ## Install WP-CLI
 
@@ -102,15 +106,13 @@ chmod +x wp-cli.phar
 mv wp-cli.phar /usr/local/bin/wp
 
 
-## Install WordPress
+## Install WordPress Template
 
-echo "Installing WordPress..."
+echo "Installing WordPress Template..."
 
 cd /projects/sites/000-template
 wp core download --allow-root > /dev/null 2>&1
 cp /vagrant/.config/wp-config.php .
-
-mysql -uroot -proot -e "CREATE DATABASE wp_template" > /dev/null 2>&1 | grep -v "Warning: Using a password"
 
 rm wp-config-sample.php
 rm wp-content/plugins/hello.php
