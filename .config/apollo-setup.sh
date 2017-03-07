@@ -96,7 +96,7 @@ gem install mailcatcher --no-rdoc --no-ri > /dev/null 2>&1
 echo "@reboot root $(which mailcatcher) --ip=0.0.0.0" >> /etc/crontab
 update-rc.d cron defaults
 
-echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'www-data@localhost'" >> /etc/php/7.0/mods-available/mailcatcher.ini
+echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" >> /etc/php/7.0/mods-available/mailcatcher.ini
 
 phpenmod mailcatcher
 
