@@ -30,8 +30,8 @@ Vagrant.configure("2") do |config|
 	config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
 	# Synced folders	
-	config.vm.synced_folder "logs", "/projects/logs", nfs: true
-        config.vm.synced_folder "sites", "/projects/sites", nfs: true
+	config.vm.synced_folder "logs", "/projects/logs"
+        config.vm.synced_folder "sites", "/projects/sites"
 
 	# Provisioning script
 	config.vm.provision "shell", path: ".config/apollo-setup.sh"
@@ -48,9 +48,12 @@ Vagrant.configure("2") do |config|
 	config.vm.provider "virtualbox"
 
 	# VM Ware specific configuration
-	config.vm.provider "vmware_fusion" do |v|
+	config.vm.provider :vmare_fusion do |v|
+	#config.vm.provider "vmware_fusion" do |v|
 		v.vmx["memsize"] = "2048"
 		v.vmx["numvcpus"] = "2"
+		v.vmx["ethernet0.pcislotnumber"] = "33"
+
 	end
 
 	# Virtualbox specific configuration

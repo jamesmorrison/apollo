@@ -20,7 +20,7 @@ apt-get upgrade -y > /dev/null 2>&1
 
 ## Tweaking the vagrant user permissions
 
-echo "Tweaking the vagrant user permissions.."
+echo "Tweaking the vagrant user permissions..."
 
 usermod -a -G vagrant www-data > /dev/null 2>&1
 echo "vagrant ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
@@ -30,12 +30,12 @@ echo "vagrant ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 echo "Installing Common Components..."
 
-echo postfix postfix/main_mailer_type select Internet Site | debconf-set-selections
-echo postfix postfix/mailname string apollo | debconf-set-selections
+apt-get install build-essential colordiff curl dos2unix imagemagick gettext git libsqlite3-dev mailutils ngrep ntp postfix ruby-dev unzip zip -y > /dev/null 2>&1
 
-apt-get install colordiff curl dos2unix imagemagick gettext git libsqlite3-dev ngrep ntp postfix unzip zip -y > /dev/null 2>&1
+sed -i "s/inet_interfaces = all/inet_interfaces = loopback-only/" /etc/postfix/main.cf
+sed -i "s/inet_protocols = all/inet_protocols = ipv4/" /etc/postfix/main.cf
 
-echo "inet_protocols = ipv4" >> "/etc/postfix/main.cf"
+service postfix restart
 
 
 ## Install Nginx
@@ -87,13 +87,20 @@ sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.0/fpm/
 sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.0/fpm/php.ini
 
 
-## Install Mailserver
+## Install Mailcatcher
 
-echo "Installing Postfix (email server)..."
+echo "Installing Mailcatcher... (this takes a while)"
 
-apt-get install mailutils -
-sed -i "s/inet_interfaces = all/inet_interfaces = loopback-only/" /etc/postfix/main.cfy
-service postfix restart
+gem install mailcatcher --no-rdoc --no-ri > /dev/null 2>&1
+
+echo "@reboot root $(which mailcatcher) --ip=0.0.0.0" >> /etc/crontab
+update-rc.d cron defaults
+
+echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'www-data@localhost'" >> /etc/php/7.0/mods-available/mailcatcher.ini
+
+phpenmod mailcatcher
+
+/usr/bin/env $(which mailcatcher) --ip=0.0.0.0 > /dev/null 2>&1
 
 
 ## Install WP-CLI
@@ -113,10 +120,6 @@ echo "Installing WordPress Template..."
 cd /projects/sites/000-template
 wp core download --allow-root > /dev/null 2>&1
 cp /vagrant/.config/wp-config.php .
-
-rm wp-config-sample.php
-rm wp-content/plugins/hello.php
-rm -R wp-content/plugins/akismet
 
 
 ## Cleanup
