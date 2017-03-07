@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
 	config.vm.box = "boxcutter/ubuntu1604"
 	
 	# IP - private network only
-	config.vm.network :private_network, id: "apollo_primary", ip: "10.10.10.10"
+	config.vm.network :private_network, id: "apollo_primary", ip: "10.10.20.20"
 	
 	# Hostname
 	config.vm.hostname = "apollo"
