@@ -13,14 +13,11 @@ vagrant_dir = File.expand_path(File.dirname(__FILE__))
 
 Vagrant.configure("2") do |config|
 
-	# Vagrant verison
-	vagrant_version = Vagrant::VERSION.sub(/^v/, '')
-
 	# Default box
 	config.vm.box = "boxcutter/ubuntu1604"
 	
 	# IP - private network only
-	config.vm.network :private_network, id: "apollo_primary", ip: "10.10.20.20"
+	config.vm.network :private_network, id: "apollo_primary", ip: "10.10.10.10"
 	
 	# Hostname
 	config.vm.hostname = "apollo"
@@ -37,11 +34,9 @@ Vagrant.configure("2") do |config|
 	config.vm.provision "shell", path: ".config/apollo-setup.sh"
 
 	# Restart services on boot
-	if vagrant_version >= "1.6.0"
-		config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
-		config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
-		config.vm.provision :shell, inline: "sudo service php7.0-fpm restart", run: "always"
-	end
+	config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
+	config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
+	config.vm.provision :shell, inline: "sudo service php7.0-fpm restart", run: "always"
 
 	# Prefer VMware Fusion before VirtualBox
 	config.vm.provider "vmware_fusion"
