@@ -27,8 +27,8 @@ Vagrant.configure("2") do |config|
 	config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
 	# Synced folders	
-	config.vm.synced_folder "logs", "/projects/logs"
-        config.vm.synced_folder "sites", "/projects/sites"
+	config.vm.synced_folder "logs", "/projects/logs", owner: "www-data", group: "www-data", umask: "666"
+        config.vm.synced_folder "sites", "/projects/sites", owner: "www-data", group: "www-data", umask: "666"
 
 	# Provisioning script
 	config.vm.provision "shell", path: ".config/apollo-setup.sh"
@@ -38,17 +38,10 @@ Vagrant.configure("2") do |config|
 	config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
 	config.vm.provision :shell, inline: "sudo service php7.0-fpm restart", run: "always"
 
-	# Prefer VMware Fusion before VirtualBox
-	config.vm.provider "vmware_fusion"
-	config.vm.provider "virtualbox"
-
 	# VM Ware specific configuration
-	config.vm.provider :vmare_fusion do |v|
-	#config.vm.provider "vmware_fusion" do |v|
+	config.vm.provider "vmware_fusion" do |v|
 		v.vmx["memsize"] = "2048"
 		v.vmx["numvcpus"] = "2"
-		v.vmx["ethernet0.pcislotnumber"] = "33"
-
 	end
 
 	# Virtualbox specific configuration
@@ -56,7 +49,6 @@ Vagrant.configure("2") do |config|
 		v.customize ["modifyvm", :id, "--memory", 2048]
 		v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
 	end
-
 
 	# Load Customfile if it exists
 	if File.exists?(File.join(vagrant_dir,'Customfile')) then
