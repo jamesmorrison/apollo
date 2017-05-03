@@ -27,8 +27,13 @@ Vagrant.configure("2") do |config|
 	config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
 	# Synced folders	
-	config.vm.synced_folder "logs", "/projects/logs", owner: "www-data", group: "www-data", umask: "666"
-        config.vm.synced_folder "sites", "/projects/sites", owner: "www-data", group: "www-data", umask: "666"
+	config.vm.synced_folder "logs", "/projects/logs", owner: "www-data", group: "www-data", umask: "777"
+	config.vm.synced_folder "sites", "/projects/sites", owner: "www-data", group: "www-data", umask: "777"
+
+
+#	config.vm.synced_folder "logs", "/projects/logs", owner: "vagrant", group: "www-data", mount_options: ["dmode=775,fmode=664"]
+#	config.vm.synced_folder "sites", "/projects/sites", owner: "vagrant", group: "www-data", mount_options: ["dmode=775,fmode=664"]
+
 
 	# Provisioning script
 	config.vm.provision "shell", path: ".config/apollo-setup.sh"
@@ -40,13 +45,14 @@ Vagrant.configure("2") do |config|
 
 	# VM Ware specific configuration
 	config.vm.provider "vmware_fusion" do |v|
-		v.vmx["memsize"] = "2048"
+		v.vmx["memsize"] = "4096"
 		v.vmx["numvcpus"] = "2"
+		v.whitelist_verified = true
 	end
 
 	# Virtualbox specific configuration
 	config.vm.provider "virtualbox" do |v|
-		v.customize ["modifyvm", :id, "--memory", 2048]
+		v.customize ["modifyvm", :id, "--memory", 4096]
 		v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
 	end
 
