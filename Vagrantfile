@@ -15,10 +15,10 @@ Vagrant.configure("2") do |config|
 
 	# Default box
 	config.vm.box = "boxcutter/ubuntu1604"
-	
+
 	# IP - private network only
 	config.vm.network :private_network, id: "apollo_primary", ip: "10.10.10.10"
-	
+
 	# Hostname
 	config.vm.hostname = "apollo"
 	config.ssh.forward_agent = true
@@ -26,14 +26,9 @@ Vagrant.configure("2") do |config|
 	# This supresses the harmless but annoying 'stdin: is not a tty' error that is generated every time a shell script provisioner is run
 	config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
-	# Synced folders	
-	config.vm.synced_folder "logs", "/projects/logs", owner: "www-data", group: "www-data", umask: "777"
-	config.vm.synced_folder "sites", "/projects/sites", owner: "www-data", group: "www-data", umask: "777"
-
-
-#	config.vm.synced_folder "logs", "/projects/logs", owner: "vagrant", group: "www-data", mount_options: ["dmode=775,fmode=664"]
-#	config.vm.synced_folder "sites", "/projects/sites", owner: "vagrant", group: "www-data", mount_options: ["dmode=775,fmode=664"]
-
+	# Synced folders
+	config.vm.synced_folder "logs", "/projects/logs", nfs: true
+	config.vm.synced_folder "sites", "/projects/sites", nfs: true
 
 	# Provisioning script
 	config.vm.provision "shell", path: ".config/apollo-setup.sh"
