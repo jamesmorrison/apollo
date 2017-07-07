@@ -1,5 +1,12 @@
 <?php
 
+// WP CLI
+
+if ( defined( 'WP_CLI' ) && ! isset( $_SERVER[ 'SERVER_NAME' ] ) ) {
+        $_SERVER[ 'SERVER_NAME' ] = '';
+}
+
+
 // Database
 
 define( 'DB_NAME',      '' ); // UPDATE THIS TO THE DB NAME
@@ -25,16 +32,23 @@ define('NONCE_SALT',       '+cXDS%Z$GH)K,$ JvgHD%bXO`02{.56k[kKgt{U@]0P+nyQ)Pq)h
 
 // Multisite
 
-# define( 'WP_ALLOW_MULTISITE',   true );
-# define( 'MULTISITE',            true );
-# define( 'SUBDOMAIN_INSTALL',    true);
-# define( 'DOMAIN_CURRENT_SITE',  '' ); // UPDATE THIS TO THE MAIN SITE URL
-# define( 'PATH_CURRENT_SITE',    '/');
-# define( 'SITE_ID_CURRENT_SITE', 1);
-# define( 'BLOG_ID_CURRENT_SITE', 1);
-# define( 'SUNRISE',              'on' );
-# define( 'NOBLOGREDIRECT',       '' );
+define( 'WP_ALLOW_MULTISITE',   true );
+/*
+define( 'MULTISITE',            true );
+define( 'SUBDOMAIN_INSTALL',    true);
+define( 'DOMAIN_CURRENT_SITE',  str_replace( '/projects/sites/', '', dirname( __FILE__ ) ) );
+define( 'PATH_CURRENT_SITE',    '/');
+define( 'SITE_ID_CURRENT_SITE', 1);
+define( 'BLOG_ID_CURRENT_SITE', 1);
+file_exists( dirname( __FILE__ ) . '/wp-content/sunrise.php' ) && define( 'SUNRISE', 'on');
+define( 'NOBLOGREDIRECT',       'http://' . DOMAIN_CURRENT_SITE . '/?noblogredirect' );
+*/
 
+
+// Memory Limit
+
+define( 'WP_MEMORY_LIMIT', defined( 'MULTISITE' ) ? '512M' : '256M' );
+define( 'WP_MAX_MEMORY_LIMIT', WP_MEMORY_LIMIT );
 
 // Debugging
 
