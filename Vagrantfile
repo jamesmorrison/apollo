@@ -14,7 +14,7 @@ vagrant_dir = File.expand_path(File.dirname(__FILE__))
 Vagrant.configure("2") do |config|
 
 	# Default box
-	config.vm.box = "boxcutter/ubuntu1604"
+	config.vm.box = "box-cutter/ubuntu1604"
 
 	# IP - private network only
 	config.vm.network :private_network, id: "apollo_primary", ip: "10.10.10.10"
