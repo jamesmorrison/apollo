@@ -51,8 +51,7 @@ sed -i "s/# server_tokens off/server_tokens off; client_max_body_size 64m; fastc
 
 rm -R /etc/nginx/sites-available/*
 rm -R /etc/nginx/sites-enabled/*
-cp /vagrant/.config/nginx-default.conf /etc/nginx/sites-enabled/
-cp /vagrant/.config/nginx-default-ssl.conf /etc/nginx/sites-enabled/
+cp /vagrant/.config/000-default.conf /etc/nginx/sites-enabled/
 cp /vagrant/.config/index.html /projects/sites/000-default/
 service ngxinx restart > /dev/null 2>&1
 
@@ -134,4 +133,9 @@ apt-get clean > /dev/null 2>&1
 
 echo "================================================"
 echo "Apollo configuration is complete"
+echo ""
+echo "As a number of packages have been installed it is"
+echo "recommended you reload vagrant now"
+echo ""
+echo "To do this, type 'vagrant reload'"
 echo "================================================"
