@@ -1,0 +1,12 @@
+## RENAME THIS TO Customfile to enable
+
+
+# If you want to change the private network IP, you MUST leave the ID as "apollo_primary"
+# If you don't, you'll have "apollo_primary" and your custom name pointing to this box
+
+# Optionally change the IP Apollo runs on
+config.vm.network :private_network, id: "apollo_primary", ip: "10.10.10.10"
+
+# Optionally change the hostname; note this is output as the X-Vagrant header so you can be sure which box you're
+# working on - this is useful where you have multiple instances of Apollo running at the same time
+config.vm.hostname = "apollo"
