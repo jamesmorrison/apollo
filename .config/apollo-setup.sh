@@ -53,8 +53,10 @@ if ! which nginx > /dev/null 2>&1; then
 
 	rm -R /etc/nginx/sites-available/*
 	rm -R /etc/nginx/sites-enabled/*
+
 	cp /vagrant/.config/000-default.conf /etc/nginx/sites-enabled/
 	cp /vagrant/.config/index.html /projects/sites/000-default/
+
 	service ngxinx restart > /dev/null 2>&1
 
 else
@@ -87,6 +89,8 @@ if ! which mysql > /dev/null 2>&1; then
 
 	apt-get install mysql-server -y > /dev/null 2>&1
 
+	service mysql restart
+
 else
 
 	echo "MySQL Server is already installed; skipping..."
@@ -105,9 +109,30 @@ if ! which php7.0 > /dev/null 2>&1; then
 	sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.0/fpm/php.ini
 	sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.0/fpm/php.ini
 
+	service php7.0-fpm restart
+
 else
 
 	echo "PHP 7 and dependencies are already installed; skipping..."
+
+fi
+
+
+## Install PHP My Admin
+
+if [ ! -d /usr/share/phpmyadmin/ ]; then
+
+	echo "Installing PHP My Admin..."
+
+	apt-get install phpmyadmin -y > /dev/null 2>&1
+
+	cp /vagrant/.config/000-phpmyadmin.conf /etc/nginx/sites-enabled/
+
+	service nginx restart
+
+else
+
+	echo "PHP My Admin is already installed; skipping..."
 
 fi
 
