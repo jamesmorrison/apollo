@@ -35,29 +35,10 @@ Vagrant.configure("2") do |config|
 	config.vm.provision "shell", path: ".config/apollo-setup.sh"
 
 	# Restart services on boot
+	config.vm.provision "shell", path: ".scripts/db-backup.sh", run: "always"
 	config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
 	config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
 	config.vm.provision :shell, inline: "sudo service php7.0-fpm restart", run: "always"
-	
-	# Backup databases on halt, if the vagrant-triggers plugin is installed
-	if Vagrant.has_plugin? 'vagrant-triggers'
-
-		config.trigger.before :halt do
-			puts "Backing up your databases, this can take a few minutes..."
-			run_remote  "bash /vagrant/.scripts/db-backup.sh"
-		end
-
-	else
-
-		puts
-		puts "The 'vagrant-triggers' plugin is not installed; this is required to back up your databases and whilst optional, is highly recommended"
-		puts "You can install the plugin with this command:"
-		puts
-		puts "vagrant plugin install vagrant-triggers"
-		puts
-
-	end
-
 
 	# VM Ware specific configuration
 	config.vm.provider "vmware_fusion" do |v|
