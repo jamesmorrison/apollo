@@ -18,3 +18,16 @@ for db in $databases; do
   mysqldump --force --opt --user=$MYSQL_USER --databases $db > "$BACKUP_DIR/$db.sql"
   echo "Database $db backed up..."
 done
+
+if [ -d "$BACKUP_DIR" ]; then
+
+	echo "Compressing databases..."
+
+	zip -r "$BACKUP_DIR.zip" "$BACKUP_DIR"
+
+	echo "Databases have been backed up and compressed to $TIMESTAMP.zip"
+
+	rm -R "$BACKUP_DIR"
+
+	echo "Database folder ($TIMESTAMP) has been removed"
+fi
