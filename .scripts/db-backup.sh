@@ -14,4 +14,5 @@ databases=`mysql --user=$MYSQL_USER -e "SHOW DATABASES;" | grep -Ev "(Database|i
  
 for db in $databases; do
   mysqldump --force --opt --user=$MYSQL_USER --databases $db > "$BACKUP_DIR/$db.sql"
+  echo "Database $db backed up..."
 done
