@@ -68,13 +68,17 @@ fi
 
 ## Install SSL certificate
 
-echo "Installing SSL certificate..."
-
 # Ensure the folder does not exist..
 if [ ! -d "/etc/nginx/ssl" ]; then
 
+	echo "Installing SSL certificate..."
+
 	mkdir /etc/nginx/ssl
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/selfsigned.key -out /etc/nginx/ssl/selfsigned.crt -subj "/C=GB/ST=London/L=London/O=Apollo/OU=Apollo/CN=*.dev" > /dev/null 2>&1
+
+else
+
+	echo "SSL certificates are already configured; skipping..."
 
 fi
 
