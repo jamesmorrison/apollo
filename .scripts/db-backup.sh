@@ -10,24 +10,33 @@ export MYSQL_PWD=$MYSQL_PASSWORD
  
 mkdir -p "$BACKUP_DIR"
 
-databases=`mysql --user=$MYSQL_USER -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|phpmyadmin|sys|mysql)"`
+databases=`mysql --user=$MYSQL_USER -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|sys|mysql)"`
 
 echo "Backing up your databases; this can take a few minutes..."
 
-for db in $databases; do
-  mysqldump --force --opt --user=$MYSQL_USER --databases $db > "$BACKUP_DIR/$db.sql"
-  echo "Database $db backed up..."
-done
+if [ ! -z "$databases" ]; then
 
-if [ -d "$BACKUP_DIR" ]; then
+	for db in $databases; do
+		mysqldump --force --opt --user=$MYSQL_USER --databases $db > "$BACKUP_DIR/$db.sql"
+		echo "Database $db backed up..."
+	done
 
-	echo "Compressing databases..."
+	if [ -d "$BACKUP_DIR" ] && [ "$(ls -A $BACKUP_DIR)" ]; then
 
-	zip -r "$BACKUP_DIR.zip" "$BACKUP_DIR"
+		echo "Compressing databases..."
 
-	echo "Databases have been backed up and compressed to $TIMESTAMP.zip"
+		zip -r "$BACKUP_DIR.zip" "$BACKUP_DIR"
 
-	rm -R "$BACKUP_DIR"
+		echo "Databases have been backed up and compressed to $TIMESTAMP.zip"
 
-	echo "Database folder ($TIMESTAMP) has been removed"
+		rm -R "$BACKUP_DIR"
+
+		echo "Database folder ($TIMESTAMP) has been removed."
+
+	else
+
+		echo "No databases were found; no backup was created."
+
+	fi
+
 fi
