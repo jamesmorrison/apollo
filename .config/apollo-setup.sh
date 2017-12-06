@@ -10,6 +10,13 @@ echo "Starting Apollo configuration setup "
 echo "================================================"
 
 
+# Add the PHP repository
+
+echo "Adding the ppa:ondrej/php repository..."
+
+add-apt-repository ppa:ondrej/php
+
+
 ## Update all the things
 
 echo "Updating system services... (this takes a while, might be a good time to put the kettle on)"
@@ -36,7 +43,6 @@ sed -i "s/inet_interfaces = all/inet_interfaces = loopback-only/" /etc/postfix/m
 sed -i "s/inet_protocols = all/inet_protocols = ipv4/" /etc/postfix/main.cf
 
 service postfix restart
-
 
 ## Install Nginx
 
