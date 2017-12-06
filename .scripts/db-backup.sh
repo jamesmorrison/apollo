@@ -12,8 +12,6 @@ mkdir -p "$BACKUP_DIR"
 
 databases=`mysql --user=$MYSQL_USER -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema|phpmyadmin|sys|mysql)"`
 
-echo $databases;
-
 if [ -z "$databases" ]; then
 	echo "No databases were found; no backup was created."
 else
@@ -25,11 +23,12 @@ else
 		echo "Database $db backed up..."
 	done
 
-	if [ -d "$BACKUP_DIR" ] && [ "$(ls -A $BACKUP_DIR)" ]; then
+	if [ "$(ls -A $BACKUP_DIR)" ]; then
 
 		echo "Compressing databases..."
 
-		zip -r "$BACKUP_DIR.zip" "$BACKUP_DIR"
+		cd /vagrant/databases/
+		zip -r "$BACKUP_DIR.zip" "$TIMESTAMP"
 
 		echo "Databases have been backed up and compressed to $TIMESTAMP.zip"
 
