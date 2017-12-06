@@ -119,6 +119,8 @@ if ! which php7.0 > /dev/null 2>&1; then
 	sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.0/fpm/php.ini
 	sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.0/fpm/php.ini
 
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.0/mods-available/mailcatcher.ini
+
 	service php7.0-fpm restart
 
 else
@@ -139,6 +141,8 @@ if ! which php7.1 > /dev/null 2>&1; then
 	sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.1/fpm/php.ini
 	sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.1/fpm/php.ini
 	sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.1/fpm/php.ini
+	
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.1/mods-available/mailcatcher.ini
 
 	service php7.1-fpm restart
 
@@ -160,6 +164,8 @@ if ! which php7.2 > /dev/null 2>&1; then
 	sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.2/fpm/php.ini
 	sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.2/fpm/php.ini
 	sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.2/fpm/php.ini
+
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.2/mods-available/mailcatcher.ini
 
 	service php7.2-fpm restart
 	
@@ -208,9 +214,9 @@ if ! which mailcatcher > /dev/null 2>&1; then
 	echo "@reboot root $(which mailcatcher) --ip=0.0.0.0" >> /etc/crontab
 	update-rc.d cron defaults
 
-	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" >> /etc/php/7.0/mods-available/mailcatcher.ini
-	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" >> /etc/php/7.1/mods-available/mailcatcher.ini
-	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" >> /etc/php/7.2/mods-available/mailcatcher.ini
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.0/mods-available/mailcatcher.ini
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.1/mods-available/mailcatcher.ini
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.2/mods-available/mailcatcher.ini
 
 	phpenmod mailcatcher
 
