@@ -12,7 +12,7 @@ echo "================================================"
 
 # Add the PHP repository
 
-echo "Adding the ppa:ondrej/php repository...x"
+echo "Adding the ppa:ondrej/php repository..."
 
 add-apt-repository ppa:ondrej/php > /dev/null 2>&1
 
@@ -60,8 +60,8 @@ if ! which nginx > /dev/null 2>&1; then
 	rm -R /etc/nginx/sites-available/*
 	rm -R /etc/nginx/sites-enabled/*
 
-	cp /vagrant/.config/000-default.conf /etc/nginx/sites-enabled/
-	cp /vagrant/.config/index.html /projects/sites/000-default/
+	cp /vagrant/.files/000-default.conf /etc/nginx/sites-enabled/
+	cp /vagrant/.files/index.html /projects/sites/000-default/
 
 	service ngxinx restart > /dev/null 2>&1
 
@@ -165,8 +165,8 @@ if ! which php7.2 > /dev/null 2>&1; then
 	
 	# PHP 7.2 became the default as of 06/12/2017; this ensures that the latest update is copied into place if PHP 7.2 is installed - i.e. when a user updates Apollo, they switch to PHP 7.2
 	# Note that existing custom configurations will not be touched, PHP 7.0 continues to remain available so there shouldn't be a problem on update
-	cp /vagrant/.config/000-default.conf /etc/nginx/sites-enabled/
-	cp /vagrant/.config/000-phpmyadmin.conf /etc/nginx/sites-enabled/
+	cp /vagrant/.files/000-default.conf /etc/nginx/sites-enabled/
+	cp /vagrant/.files/000-phpmyadmin.conf /etc/nginx/sites-enabled/
 	
 	service nginx restart
 
@@ -186,7 +186,7 @@ if [ ! -d /usr/share/phpmyadmin/ ]; then
 
 	apt-get install phpmyadmin -y > /dev/null 2>&1
 
-	cp /vagrant/.config/000-phpmyadmin.conf /etc/nginx/sites-enabled/
+	cp /vagrant/.files/000-phpmyadmin.conf /etc/nginx/sites-enabled/
 
 	service nginx restart
 
@@ -248,7 +248,7 @@ if [ ! -f /projects/sites/000-template/wp-load.php ]; then
 
 	cd /projects/sites/000-template
 	wp core download --allow-root > /dev/null 2>&1
-	cp /vagrant/.config/wp-config.php .
+	cp /vagrant/.files/wp-config.php .
 
 else
 
