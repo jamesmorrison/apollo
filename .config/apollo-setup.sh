@@ -101,11 +101,11 @@ else
 
 fi
 
-## Install PHP 7
+## Install PHP 7.0
 
 if ! which php7.0 > /dev/null 2>&1; then
 
-	echo "Installing PHP 7 and dependencies..."
+	echo "Installing PHP 7.0 and dependencies..."
 
 	apt-get install php7.0-bcmath php7.0-cgi php7.0-cli php7.0-curl php7.0-dev php7.0-fpm php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-mysql php7.0-imap php7.0-json php7.0-pspell php7.0-soap php7.0-xml php7.0-xmlrpc php7.0-zip php-imagick php-memcache php-pear -y > /dev/null 2>&1
 
@@ -117,9 +117,59 @@ if ! which php7.0 > /dev/null 2>&1; then
 
 else
 
-	echo "PHP 7 and dependencies are already installed; skipping..."
+	echo "PHP 7.0 and dependencies are already installed; skipping..."
 
 fi
+
+
+## Install PHP 7.1
+
+if ! which php7.1 > /dev/null 2>&1; then
+
+	echo "Installing PHP 7.1 and dependencies..."
+
+	apt-get install php7.1-bcmath php7.1-cgi php7.1-cli php7.1-curl php7.1-dev php7.1-fpm php7.1-gd php7.1-mbstring php7.1-mysql php7.1-imap php7.1-json php7.1-pspell php7.1-soap php7.1-xml php7.1-xmlrpc php7.1-zip php-imagick php-memcache php-pear libargon2-0 libsodium18 libssl1.1 php7.1-common php7.1-opcache php7.1-readline -y > /dev/null 2>&1
+
+	sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.1/fpm/php.ini
+	sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.1/fpm/php.ini
+	sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.1/fpm/php.ini
+
+	service php7.1-fpm restart
+
+else
+
+	echo "PHP 7.1 and dependencies are already installed; skipping..."
+
+fi
+
+
+## Install PHP 7.2
+
+if ! which php7.2 > /dev/null 2>&1; then
+
+	echo "Installing PHP 7.2 and dependencies..."
+
+	apt-get install php7.2-bcmath php7.2-cgi php7.2-cli php7.2-curl php7.2-dev php7.2-fpm php7.2-gd php7.2-mbstring php7.2-mysql php7.2-imap php7.2-json php7.2-pspell php7.2-soap php7.2-xml php7.2-xmlrpc php7.2-zip php-imagick php-memcache php-pear libargon2-0 libsodium18 libssl1.1 php7.2-common php7.2-opcache php7.2-readline -y > /dev/null 2>&1
+
+	sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.2/fpm/php.ini
+	sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.2/fpm/php.ini
+	sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.2/fpm/php.ini
+
+	service php7.2-fpm restart
+	
+	# PHP 7.2 became the default as of 06/12/2017; this ensures that the latest update is copied into place if PHP 7.2 is installed - i.e. when a user updates Apollo, they switch to PHP 7.2
+	# Note that existing custom configurations will not be touched, PHP 7.0 continues to remain available so there shouldn't be a problem on update
+	cp /vagrant/.config/000-default.conf /etc/nginx/sites-enabled/
+	cp /vagrant/.config/000-phpmyadmin.conf /etc/nginx/sites-enabled/
+	
+	service nginx restart
+
+else
+
+	echo "PHP 7.2 and dependencies are already installed; skipping..."
+
+fi
+
 
 
 ## Install PHP My Admin
