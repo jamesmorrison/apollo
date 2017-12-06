@@ -14,6 +14,8 @@ echo "================================================"
 
 echo "Adding the ppa:ondrej/php repository..."
 
+apt install software-properties-common -y > /dev/null 2>&1
+
 add-apt-repository ppa:ondrej/php > /dev/null 2>&1
 
 
