@@ -12,9 +12,9 @@ echo "================================================"
 
 # Add the PHP repository
 
-echo "Adding the ppa:ondrej/php repository..."
+echo "Adding the ppa:ondrej/php repository...x"
 
-add-apt-repository ppa:ondrej/php
+add-apt-repository ppa:ondrej/php > /dev/null 2>&1
 
 
 ## Update all the things
