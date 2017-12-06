@@ -209,6 +209,8 @@ if ! which mailcatcher > /dev/null 2>&1; then
 	update-rc.d cron defaults
 
 	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" >> /etc/php/7.0/mods-available/mailcatcher.ini
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" >> /etc/php/7.1/mods-available/mailcatcher.ini
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" >> /etc/php/7.2/mods-available/mailcatcher.ini
 
 	phpenmod mailcatcher
 
