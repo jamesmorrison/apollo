@@ -32,13 +32,13 @@ Vagrant.configure("2") do |config|
 	config.vm.synced_folder "sites", "/projects/sites", nfs: true
 
 	# Provisioning script
-	config.vm.provision "shell", path: ".config/apollo-setup.sh"
+	config.vm.provision "shell", path: ".scripts/provision.sh"
+
+	# Backup databases on boot
+	config.vm.provision "shell", path: ".scripts/db-backup.sh", run: "always"
 
 	# Restart services on boot
-	config.vm.provision "shell", path: ".scripts/db-backup.sh", run: "always"
-	config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
-	config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
-	config.vm.provision :shell, inline: "sudo service php7.0-fpm restart", run: "always"
+	config.vm.provision "shell", path: ".scripts/restart-services.sh", run: "always"
 
 	# VM Ware specific configuration
 	config.vm.provider "vmware_fusion" do |v|

@@ -10,6 +10,13 @@ echo "Starting Apollo configuration setup "
 echo "================================================"
 
 
+# Add the PHP repository
+
+echo "Adding the ppa:ondrej/php repository..."
+
+add-apt-repository ppa:ondrej/php > /dev/null 2>&1
+
+
 ## Update all the things
 
 echo "Updating system services... (this takes a while, might be a good time to put the kettle on)"
@@ -37,7 +44,6 @@ sed -i "s/inet_protocols = all/inet_protocols = ipv4/" /etc/postfix/main.cf
 
 service postfix restart
 
-
 ## Install Nginx
 
 if ! which nginx > /dev/null 2>&1; then
@@ -54,8 +60,8 @@ if ! which nginx > /dev/null 2>&1; then
 	rm -R /etc/nginx/sites-available/*
 	rm -R /etc/nginx/sites-enabled/*
 
-	cp /vagrant/.config/000-default.conf /etc/nginx/sites-enabled/
-	cp /vagrant/.config/index.html /projects/sites/000-default/
+	cp /vagrant/.files/000-default.conf /etc/nginx/sites-enabled/
+	cp /vagrant/.files/index.html /projects/sites/000-default/
 
 	service ngxinx restart > /dev/null 2>&1
 
@@ -101,11 +107,11 @@ else
 
 fi
 
-## Install PHP 7
+## Install PHP 7.0
 
 if ! which php7.0 > /dev/null 2>&1; then
 
-	echo "Installing PHP 7 and dependencies..."
+	echo "Installing PHP 7.0 and dependencies..."
 
 	apt-get install php7.0-bcmath php7.0-cgi php7.0-cli php7.0-curl php7.0-dev php7.0-fpm php7.0-gd php7.0-mbstring php7.0-mcrypt php7.0-mysql php7.0-imap php7.0-json php7.0-pspell php7.0-soap php7.0-xml php7.0-xmlrpc php7.0-zip php-imagick php-memcache php-pear -y > /dev/null 2>&1
 
@@ -113,13 +119,69 @@ if ! which php7.0 > /dev/null 2>&1; then
 	sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.0/fpm/php.ini
 	sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.0/fpm/php.ini
 
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.0/mods-available/mailcatcher.ini
+
 	service php7.0-fpm restart
 
 else
 
-	echo "PHP 7 and dependencies are already installed; skipping..."
+	echo "PHP 7.0 and dependencies are already installed; skipping..."
 
 fi
+
+
+## Install PHP 7.1
+
+if ! which php7.1 > /dev/null 2>&1; then
+
+	echo "Installing PHP 7.1 and dependencies..."
+
+	apt-get install php7.1-bcmath php7.1-cgi php7.1-cli php7.1-curl php7.1-dev php7.1-fpm php7.1-gd php7.1-mbstring php7.1-mysql php7.1-imap php7.1-json php7.1-pspell php7.1-soap php7.1-xml php7.1-xmlrpc php7.1-zip php-imagick php-memcache php-pear libargon2-0 libsodium18 libssl1.1 php7.1-common php7.1-opcache php7.1-readline -y > /dev/null 2>&1
+
+	sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.1/fpm/php.ini
+	sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.1/fpm/php.ini
+	sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.1/fpm/php.ini
+	
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.1/mods-available/mailcatcher.ini
+
+	service php7.1-fpm restart
+
+else
+
+	echo "PHP 7.1 and dependencies are already installed; skipping..."
+
+fi
+
+
+## Install PHP 7.2
+
+if ! which php7.2 > /dev/null 2>&1; then
+
+	echo "Installing PHP 7.2 and dependencies..."
+
+	apt-get install php7.2-bcmath php7.2-cgi php7.2-cli php7.2-curl php7.2-dev php7.2-fpm php7.2-gd php7.2-mbstring php7.2-mysql php7.2-imap php7.2-json php7.2-pspell php7.2-soap php7.2-xml php7.2-xmlrpc php7.2-zip php-imagick php-memcache php-pear libargon2-0 libsodium18 libssl1.1 php7.2-common php7.2-opcache php7.2-readline -y > /dev/null 2>&1
+
+	sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.2/fpm/php.ini
+	sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.2/fpm/php.ini
+	sed -i "s/post_max_size = 8M/post_max_size = 64M/" /etc/php/7.2/fpm/php.ini
+
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.2/mods-available/mailcatcher.ini
+
+	service php7.2-fpm restart
+	
+	# PHP 7.2 became the default as of 06/12/2017; this ensures that the latest update is copied into place if PHP 7.2 is installed - i.e. when a user updates Apollo, they switch to PHP 7.2
+	# Note that existing custom configurations will not be touched, PHP 7.0 continues to remain available so there shouldn't be a problem on update
+	cp /vagrant/.files/000-default.conf /etc/nginx/sites-enabled/
+	cp /vagrant/.files/000-phpmyadmin.conf /etc/nginx/sites-enabled/
+	
+	service nginx restart
+
+else
+
+	echo "PHP 7.2 and dependencies are already installed; skipping..."
+
+fi
+
 
 
 ## Install PHP My Admin
@@ -130,7 +192,7 @@ if [ ! -d /usr/share/phpmyadmin/ ]; then
 
 	apt-get install phpmyadmin -y > /dev/null 2>&1
 
-	cp /vagrant/.config/000-phpmyadmin.conf /etc/nginx/sites-enabled/
+	cp /vagrant/.files/000-phpmyadmin.conf /etc/nginx/sites-enabled/
 
 	service nginx restart
 
@@ -152,7 +214,9 @@ if ! which mailcatcher > /dev/null 2>&1; then
 	echo "@reboot root $(which mailcatcher) --ip=0.0.0.0" >> /etc/crontab
 	update-rc.d cron defaults
 
-	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" >> /etc/php/7.0/mods-available/mailcatcher.ini
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.0/mods-available/mailcatcher.ini
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.1/mods-available/mailcatcher.ini
+	echo "sendmail_path = /usr/bin/env $(which catchmail) -f 'vagrant@apollo'" > /etc/php/7.2/mods-available/mailcatcher.ini
 
 	phpenmod mailcatcher
 
@@ -192,7 +256,7 @@ if [ ! -f /projects/sites/000-template/wp-load.php ]; then
 
 	cd /projects/sites/000-template
 	wp core download --allow-root > /dev/null 2>&1
-	cp /vagrant/.config/wp-config.php .
+	cp /vagrant/.files/wp-config.php .
 
 else
 
