@@ -36,11 +36,7 @@ Vagrant.configure("2") do |config|
 
 	# Restart services on boot
 	config.vm.provision "shell", path: ".scripts/db-backup.sh", run: "always"
-	config.vm.provision :shell, inline: "sudo service mysql restart", run: "always"
-	config.vm.provision :shell, inline: "sudo service nginx restart", run: "always"
-	config.vm.provision :shell, inline: "sudo service php7.0-fpm restart", run: "always"
-	config.vm.provision :shell, inline: "sudo service php7.1-fpm restart", run: "always"
-	config.vm.provision :shell, inline: "sudo service php7.2-fpm restart", run: "always"
+	config.vm.provision "shell", path: ".scripts/restart-services.sh", run: "always"
 
 	# VM Ware specific configuration
 	config.vm.provider "vmware_fusion" do |v|
