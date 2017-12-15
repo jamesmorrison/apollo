@@ -2,7 +2,8 @@
 .DS_Store
 .vagrant
 .ssl/*
-!.ssl/000-root.*
+!.ssl/000-root.key
+!.ssl/000-root.pem
 databases
 logs
 sites

@@ -129,8 +129,6 @@ DNS.1 = $dir" > $dir.ext
 
 }" > /etc/nginx/sites-enabled/$dir.conf
 
-	sudo service nginx restart > /dev/null 2>&1
-
 	fi
 
 done
