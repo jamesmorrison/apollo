@@ -37,6 +37,9 @@ Vagrant.configure("2") do |config|
 	# Backup databases on boot
 	config.vm.provision "shell", path: ".scripts/db-backup.sh", run: "always"
 
+	# Provision SSL / Sites
+	config.vm.provision "shell", path: ".scripts/provision-sites.sh", run: "always"
+
 	# Restart services on boot
 	config.vm.provision "shell", path: ".scripts/restart-services.sh", run: "always"
 
